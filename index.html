@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pin Generator</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="pin-generator half-width">
+                    <input id="input-pin" class="form-control" type="text">
+                    <button id="generate-pin" class="generate-btn">Generate Pin</button>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="input-section half-width">
+                    <input id="inputNumber" class="form-control" type="text">
+                    <div class="numbers">
+                        <div class="calc-body">
+                            <div class="calc-button-row">
+                              <div class="button" onclick="insertNumber(7)">7</div>
+                              <div class="button" onclick="insertNumber(8)">8</div>
+                              <div class="button" onclick="insertNumber(9)">9</div>
+                            </div>
+                            <div class="calc-button-row">
+                              <div class="button" onclick="insertNumber(4)">4</div>
+                              <div class="button" onclick="insertNumber(5)">5</div>
+                              <div class="button" onclick="insertNumber(6)">6</div>
+                            </div>
+                            <div class="calc-button-row">
+                              <div class="button" onclick="insertNumber(1)">1</div>
+                              <div class="button" onclick="insertNumber(2)">2</div>
+                              <div class="button" onclick="insertNumber(3)">3</div>
+                            </div>
+                            <div class="calc-button-row">
+                                <div class="button" onclick="removeOneByOne()"><</div>
+                                <div class="button" onclick="insertNumber(0)">0</div>
+                                <div class="button" onclick="clearAll()">C</div>
+                            </div>
+                            <div>
+                                <button onclick="checkPin()" type="submit" class="submit-btn">Submit</button>
+                                <p class="action-left">3 try left</p>
+                            </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="notify-section">
+            <p id="failed" class="notify">❌ Pin Didn't Match, Please try again</p>
+            <p id="succeed" class="notify">✅ Pin Matched... Secret door is opening for you</p>
+        </div>
+    </div>
+
+    <script>
+        // Hiding success and fail message
+        function hideMessage() {
+            document.getElementById('failed').style.display = 'none';
+            document.getElementById('succeed').style.display = 'none';
+        }
+
+        hideMessage();
+
+        // Generating Pin
+        const generatePinButton = document.getElementById('generate-pin');
+
+        generatePinButton.addEventListener('click', function() {
+            hideMessage();
+            let randomPin = Math.floor(Math.random() * 9000 + 1000);
+            const inputPin = document.getElementById('input-pin');
+            inputPin.value = randomPin;
+        });
+
+
+        // Input digits from user
+        function insertNumber(inputDigit) {
+
+            let inputNumber = document.getElementById('inputNumber');
+
+            hideMessage();
+
+            if(inputNumber.value != '') {
+                let number = parseInt(inputNumber.value);
+                inputDigit = parseInt(inputDigit);
+                number = number * 10 + inputDigit;
+                inputNumber.value = number;
+            }
+            else {
+                inputNumber.value = parseInt(inputDigit);
+            }   
+        }
+
+
+        // Check Pin
+        var tried = 0;
+        
+        function checkPin() {
+            let inputNumber = document.getElementById('inputNumber').value;
+            let generatedPin = document.getElementById('input-pin').value;
+
+            if(inputNumber != generatedPin) {
+                document.getElementById('failed').style.display = 'block';
+                tried++;
+                document.querySelector('.action-left').innerText = (3-tried) + " try left";
+
+                if(tried == 3) {
+                    document.querySelector('.submit-btn').disabled = true;
+                }
+            }
+            else {
+                document.getElementById('succeed').style.display = 'block';
+                document.getElementById('input-pin').value = "";
+            }
+            document.getElementById('inputNumber').value = "";
+        }
+
+        // Clear all the digits
+        function clearAll() {
+            document.querySelector('#inputNumber').value = "";
+        }
+
+
+        // Remove digits one by one
+        function removeOneByOne() {
+            const remain = document.getElementById('inputNumber').value;
+
+            if(remain != "") {
+                const remainNumber = parseInt(remain);
+                console.log(remainNumber);
+
+                
+                if(remainNumber < 10) {
+                    document.getElementById('inputNumber').value = "";
+                }
+                else {
+                    document.getElementById('inputNumber').value = parseInt(remainNumber/10);
+                }
+            }
+        }
+    </script>
+
+</body>
+</html>
